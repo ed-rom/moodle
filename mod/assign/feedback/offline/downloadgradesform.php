@@ -33,7 +33,7 @@ require_once($CFG->libdir.'/formslib.php');
  * @copyright 2012 NetSpot {@link http://www.netspot.com.au}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class assignfeedback_offline_upload_grades_form extends moodleform {
+class assignfeedback_offline_download_grades_form extends moodleform {
     /**
      * Define this form - called by the parent constructor
      */
@@ -43,31 +43,19 @@ class assignfeedback_offline_upload_grades_form extends moodleform {
         $mform = $this->_form;
         $params = $this->_customdata;
 
-        $mform->addElement('header', 'uploadgrades', get_string('uploadgrades', 'assignfeedback_offline'));
+        $mform->addElement('header', 'downloadgrades', get_string('downloadgrades', 'assignfeedback_offline'));
 
-        $fileoptions = array('subdirs'=>0,
-                                'maxbytes'=>$COURSE->maxbytes,
-                                'accepted_types'=>'csv',
-                                'maxfiles'=>1,
-                                'return_types'=>FILE_INTERNAL);
 
-        $mform->addElement('filepicker', 'gradesfile', get_string('uploadafile'), null, $fileoptions);
-        $mform->addRule('gradesfile', get_string('uploadnofilefound'), 'required', null, 'client');
-        $mform->addHelpButton('gradesfile', 'gradesfile', 'assignfeedback_offline');
-
-        $mform->addElement('checkbox', 'ignoremodified', '', get_string('ignoremodified', 'assignfeedback_offline'));
-        $mform->addHelpButton('ignoremodified', 'ignoremodified', 'assignfeedback_offline');
-		
-		$choices = csv_import_reader::get_delimiter_list();
+        $choices = csv_import_reader::get_delimiter_list();
         $mform->addElement('select', 'delimiter_name', get_string('csvdelimiter', 'tool_uploaduser'), $choices);
         if (array_key_exists('cfg', $choices)) {
-        	$mform->setDefault('delimiter_name', 'cfg');
+            $mform->setDefault('delimiter_name', 'cfg');
         } else if (get_string('listsep', 'langconfig') == ';') {
-        	$mform->setDefault('delimiter_name', 'semicolon');
+            $mform->setDefault('delimiter_name', 'semicolon');
         } else {
-        	$mform->setDefault('delimiter_name', 'comma');
+            $mform->setDefault('delimiter_name', 'comma');
         }
-        
+
         $choices = core_text::get_encodings();
         $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploaduser'), $choices);
         $mform->setDefault('encoding', 'UTF-8');
@@ -76,13 +64,13 @@ class assignfeedback_offline_upload_grades_form extends moodleform {
         $mform->setType('id', PARAM_INT);
         $mform->addElement('hidden', 'action', 'viewpluginpage');
         $mform->setType('action', PARAM_ALPHA);
-        $mform->addElement('hidden', 'pluginaction', 'uploadgrades');
+        $mform->addElement('hidden', 'pluginaction', 'downloadgradesexecute'); 
         $mform->setType('pluginaction', PARAM_ALPHA);
         $mform->addElement('hidden', 'plugin', 'offline');
         $mform->setType('plugin', PARAM_PLUGIN);
         $mform->addElement('hidden', 'pluginsubtype', 'assignfeedback');
         $mform->setType('pluginsubtype', PARAM_PLUGIN);
-        $this->add_action_buttons(true, get_string('uploadgrades', 'assignfeedback_offline'));
+        $this->add_action_buttons(true, get_string('downloadgrades', 'assignfeedback_offline'));
 
     }
 

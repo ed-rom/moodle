@@ -395,6 +395,13 @@ class assign_grading_table extends table_sql implements renderable {
             $columns[] = 'outcomes';
             $headers[] = get_string('outcomes', 'grades');
         }
+		
+		$encoding = optional_param('encoding', '', PARAM_TEXT);
+        if($encoding!=''){
+        	foreach ($headers as $key=>$headerItem){
+        		$headers[$key] = core_text::convert($headers[$key], 'utf-8',$encoding);
+        	}
+        }
 
         // Set the columns.
         $this->define_columns($columns);

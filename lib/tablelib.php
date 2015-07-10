@@ -800,6 +800,10 @@ class flexible_table {
                     $formattedcolumn = $row->$column;
                 }
             }
+			$encoding = optional_param('encoding', '', PARAM_TEXT);
+			if($encoding!=''){
+				$formattedcolumn = core_text::convert($formattedcolumn, 'utf-8',$encoding);
+			}
             $formattedrow[$column] = $formattedcolumn;
         }
         return $formattedrow;
@@ -1787,6 +1791,14 @@ class table_csv_export_format extends table_text_export_format_parent {
     protected $seperator = "comma";
     protected $mimetype = 'text/csv';
     protected $ext = '.csv';
+	
+	 public function __construct() {
+    	$delimiter = optional_param('delimiter_name', '', PARAM_TEXT);
+    	if($delimiter!=''){
+    		$this->seperator=$delimiter;
+    	}
+    	parent::__construct();
+    }
 }
 
 /**

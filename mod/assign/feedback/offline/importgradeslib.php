@@ -75,9 +75,9 @@ class assignfeedback_offline_grade_importer {
      * @param string $csvdata The csv data
      * @return bool false is a failed import
      */
-    public function parsecsv($csvdata) {
+    public function parsecsv($csvdata,$encoding='utf-8',$delimiter_name='comma') {
         $this->csvreader = new csv_import_reader($this->importid, 'assignfeedback_offline');
-        $this->csvreader->load_csv_content($csvdata, 'utf-8', 'comma');
+        $this->csvreader->load_csv_content($csvdata, $encoding, $delimiter_name);
     }
 
     /**

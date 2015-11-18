@@ -154,13 +154,13 @@ class flexible_table {
      * @param string $sheettitle title for downloaded data.
      * @return string download type.  One of csv, tsv, xhtml, ods, etc
      */
-    function is_downloading($download = null, $filename='', $sheettitle='') {
+    function is_downloading($download = null, $filename = '', $sheettitle = '', $delimiter = 'comma') {
         if ($download!==null) {
             $this->sheettitle = $sheettitle;
             $this->is_downloadable(true);
             $this->download = $download;
             $this->filename = clean_filename($filename);
-            $this->export_class_instance();
+            $this->export_class_instance(null, $delimiter);
         }
         return $this->download;
     }
@@ -170,14 +170,14 @@ class flexible_table {
      * @param $exportclass (optional) if passed, set the table to use this export class.
      * @return table_default_export_format_parent the export class in use (after any set).
      */
-    function export_class_instance($exportclass = null) {
+    function export_class_instance($exportclass = null, $delimiter = 'comma') {
         if (!is_null($exportclass)) {
             $this->started_output = true;
             $this->exportclass = $exportclass;
             $this->exportclass->table = $this;
         } else if (is_null($this->exportclass) && !empty($this->download)) {
             $classname = 'table_'.$this->download.'_export_format';
-            $this->exportclass = new $classname($this);
+            $this->exportclass = new $classname($this, $delimiter);
             if (!$this->exportclass->document_started()) {
                 $this->exportclass->start_document($this->filename);
             }
@@ -800,10 +800,10 @@ class flexible_table {
                     $formattedcolumn = $row->$column;
                 }
             }
-			$encoding = optional_param('encoding', '', PARAM_TEXT);
-			if($encoding!=''){
-				$formattedcolumn = core_text::convert($formattedcolumn, 'utf-8',$encoding);
-			}
+            $encoding = optional_param('encoding', '', PARAM_RAW);
+            if ($encoding != '') {
+                $formattedcolumn = core_text::convert($formattedcolumn, 'utf-8', $encoding);
+            }
             $formattedrow[$column] = $formattedcolumn;
         }
         return $formattedrow;
@@ -1791,13 +1791,10 @@ class table_csv_export_format extends table_text_export_format_parent {
     protected $seperator = "comma";
     protected $mimetype = 'text/csv';
     protected $ext = '.csv';
-	
-	 public function __construct() {
-    	$delimiter = optional_param('delimiter_name', '', PARAM_TEXT);
-    	if($delimiter!=''){
-    		$this->seperator=$delimiter;
-    	}
-    	parent::__construct();
+
+    public function __construct($object, $delimiter='comma') {
+        $this->seperator = $delimiter;
+        parent::__construct();
     }
 }
 

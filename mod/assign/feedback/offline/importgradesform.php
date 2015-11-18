@@ -62,9 +62,9 @@ class assignfeedback_offline_import_grades_form extends moodleform implements re
         }
 
         if ($csvdata) {
-            $encoding = optional_param('encoding', '', PARAM_TEXT);
-        	$delimiter_name = optional_param('delimiter_name', '', PARAM_TEXT);
-        	$gradeimporter->parsecsv($csvdata,$encoding,$delimiter_name);
+            $encoding = optional_param('encoding', '', PARAM_RAW);
+            $delimitername = optional_param('delimiter_name', '', PARAM_RAW);
+            $gradeimporter->parsecsv($csvdata, $encoding, $delimitername);
         }
 
         $scaleoptions = null;
@@ -193,12 +193,12 @@ class assignfeedback_offline_import_grades_form extends moodleform implements re
             $mform->addElement('cancel');
             $mform->closeHeaderBefore('cancel');
         }
-		
-		$delimiter_name = optional_param('delimiter_name', '', PARAM_TEXT);
-        $mform->addElement('hidden', 'delimiter_name', $delimiter_name);
+
+        $delimitername = optional_param('delimiter_name', '', PARAM_RAW);
+        $mform->addElement('hidden', 'delimiter_name', $delimitername);
         $mform->setType('delimiter_name', PARAM_ALPHA);
-        
-        $encoding = optional_param('encoding', '', PARAM_TEXT);
+
+        $encoding = optional_param('encoding', '', PARAM_RAW);
         $mform->addElement('hidden', 'encoding', $encoding);
         $mform->setType('encoding', PARAM_ALPHA);
 

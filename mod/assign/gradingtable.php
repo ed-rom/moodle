@@ -245,7 +245,8 @@ class assign_grading_table extends table_sql implements renderable {
         $this->set_sql($fields, $from, $where, $params);
 
         if ($downloadfilename) {
-            $this->is_downloading('csv', $downloadfilename);
+            $delimiter = optional_param('delimiter_name', '', PARAM_RAW);
+            $this->is_downloading('csv', $downloadfilename, '', $delimiter);
         }
 
         $columns = array();
@@ -395,12 +396,12 @@ class assign_grading_table extends table_sql implements renderable {
             $columns[] = 'outcomes';
             $headers[] = get_string('outcomes', 'grades');
         }
-		
-		$encoding = optional_param('encoding', '', PARAM_TEXT);
-        if($encoding!=''){
-        	foreach ($headers as $key=>$headerItem){
-        		$headers[$key] = core_text::convert($headers[$key], 'utf-8',$encoding);
-        	}
+
+        $encoding = optional_param('encoding', '', PARAM_RAW);
+        if ($encoding != '') {
+            foreach ($headers as $key => $headeritem) {
+                $headers[$key] = core_text::convert($headers[$key], 'utf-8', $encoding);
+            }
         }
 
         // Set the columns.

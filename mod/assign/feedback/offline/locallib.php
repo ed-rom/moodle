@@ -96,9 +96,9 @@ class assign_feedback_offline extends assign_feedback_plugin {
         $csvdata = $file->get_content();
 
         if ($csvdata) {
-            $encoding = optional_param('encoding', '', PARAM_TEXT);
-        	$delimiter_name = optional_param('delimiter_name', '', PARAM_TEXT);
-        	$gradeimporter->parsecsv($csvdata,$encoding,$delimiter_name);
+            $encoding = optional_param('encoding', '', PARAM_RAW);
+            $delimitername = optional_param('delimiter_name', '', PARAM_RAW);
+            $gradeimporter->parsecsv($csvdata, $encoding, $delimitername);
         }
         if (!$gradeimporter->init()) {
             $thisurl = new moodle_url('/mod/assign/view.php', array('action'=>'viewpluginpage',
@@ -219,29 +219,34 @@ class assign_feedback_offline extends assign_feedback_plugin {
         $o .= $renderer->render_footer();
         return $o;
     }
-	
-	public function download_grades_options(){
-		global $CFG, $USER;
-		
-		require_once($CFG->dirroot . '/mod/assign/feedback/offline/downloadgradesform.php');
-		
-		$mform = new assignfeedback_offline_download_grades_form(null,
-			array('context'=>$this->assignment->get_context(),
-					'cm'=>$this->assignment->get_course_module()->id));
 
-		$o = '';
-		$renderer = $this->assignment->get_renderer();
-		
-		$o .= $renderer->render(new assign_header($this->assignment->get_instance(),
-				$this->assignment->get_context(),
-				false,
-				$this->assignment->get_course_module()->id,
-				get_string('downloadgrades', 'assignfeedback_offline')));
-		$o .= $renderer->render(new assign_form('downloadgradesexecute', $mform));
-		$o .= $renderer->render_footer();
-		
-		return $o;
-	}
+    /**
+     * Display options top download grades form
+     *
+     * @return string The response html
+     */
+    public function download_grades_options() {
+        global $CFG, $USER;
+
+        require_once($CFG->dirroot . '/mod/assign/feedback/offline/downloadgradesform.php');
+
+        $mform = new assignfeedback_offline_download_grades_form(null,
+                                                                 array('context' => $this->assignment->get_context(),
+                                                                       'cm' => $this->assignment->get_course_module()->id));
+
+        $o = '';
+        $renderer = $this->assignment->get_renderer();
+
+        $o .= $renderer->render(new assign_header($this->assignment->get_instance(),
+                                $this->assignment->get_context(),
+                                false,
+                                $this->assignment->get_course_module()->id,
+                                get_string('downloadgrades', 'assignfeedback_offline')));
+        $o .= $renderer->render(new assign_form('downloadgradesexecute', $mform));
+        $o .= $renderer->render_footer();
+
+        return $o;
+    }
 
     /**
      * Display upload grades form
@@ -309,8 +314,8 @@ class assign_feedback_offline extends assign_feedback_plugin {
                                                                        'draftid'=>$draftid));
             if ($mform->is_cancelled()) {
                 redirect(new moodle_url('view.php',
-                                        array('id'=>$this->assignment->get_course_module()->id,
-                                              'action'=>'grading')));
+                                        array('id' => $this->assignment->get_course_module()->id,
+                                              'action' => 'grading')));
                 return;
             }
 
@@ -337,40 +342,40 @@ class assign_feedback_offline extends assign_feedback_plugin {
     public function download_grades() {
         global $CFG;
 
-		 require_once($CFG->dirroot . '/mod/assign/feedback/offline/downloadgradesform.php');
-        
+        require_once($CFG->dirroot . '/mod/assign/feedback/offline/downloadgradesform.php');
+
         $mform = new assignfeedback_offline_download_grades_form(null,
-        		array('context'=>$this->assignment->get_context(),
-        				'cm'=>$this->assignment->get_course_module()->id));
-        
+                                                                array('context' => $this->assignment->get_context(),
+                                                                'cm' => $this->assignment->get_course_module()->id));
+
         if ($mform->is_cancelled()) {
-        	redirect(new moodle_url('view.php',
-        	array('id'=>$this->assignment->get_course_module()->id,
-        	'action'=>'grading')));
-        	return;
-        }else{
-			require_capability('mod/assign:grade', $this->assignment->get_context());
-			require_once($CFG->dirroot . '/mod/assign/gradingtable.php');
+            redirect(new moodle_url('view.php',
+                                    array('id' => $this->assignment->get_course_module()->id,
+                                    'action' => 'grading')));
+            return;
+        } else {
+            require_capability('mod/assign:grade', $this->assignment->get_context());
+            require_once($CFG->dirroot . '/mod/assign/gradingtable.php');
 
-			$groupmode = groups_get_activity_groupmode($this->assignment->get_course_module());
-			// All users.
-			$groupid = 0;
-			$groupname = '';
-			if ($groupmode) {
-				$groupid = groups_get_activity_group($this->assignment->get_course_module(), true);
-				$groupname = groups_get_group_name($groupid) . '-';
-			}
-			$filename = clean_filename(get_string('offlinegradingworksheet', 'assignfeedback_offline') . '-' .
-									   $this->assignment->get_course()->shortname . '-' .
-									   $this->assignment->get_instance()->name . '-' .
-									   $groupname .
-									   $this->assignment->get_course_module()->id);
+            $groupmode = groups_get_activity_groupmode($this->assignment->get_course_module());
+            // All users.
+            $groupid = 0;
+            $groupname = '';
+            if ($groupmode) {
+                $groupid = groups_get_activity_group($this->assignment->get_course_module(), true);
+                $groupname = groups_get_group_name($groupid) . '-';
+            }
+            $filename = clean_filename(get_string('offlinegradingworksheet', 'assignfeedback_offline') . '-' .
+                                       $this->assignment->get_course()->shortname . '-' .
+                                       $this->assignment->get_instance()->name . '-' .
+                                       $groupname .
+                                       $this->assignment->get_course_module()->id);
 
-			$table = new assign_grading_table($this->assignment, 0, '', 0, false, $filename);
+            $table = new assign_grading_table($this->assignment, 0, '', 0, false, $filename);
 
-			$table->out(0, false);
-			return;
-		}
+            $table->out(0, false);
+            return;
+        }
     }
 
     /**
@@ -382,7 +387,7 @@ class assign_feedback_offline extends assign_feedback_plugin {
     public function view_page($action) {
         if ($action == 'downloadgrades') {
             return $this->download_grades_options();
-        } elseif ($action == 'downloadgradesexecute') {
+        } else if ($action == 'downloadgradesexecute') {
             return $this->download_grades();
         } else if ($action == 'uploadgrades') {
             return $this->upload_grades();
@@ -398,8 +403,8 @@ class assign_feedback_offline extends assign_feedback_plugin {
      * @return array The list of grading actions
      */
     public function get_grading_actions() {
-        return array('uploadgrades'=>get_string('uploadgrades', 'assignfeedback_offline'),
-                    'downloadgrades'=>get_string('downloadgrades', 'assignfeedback_offline'));
+        return array('uploadgrades' => get_string('uploadgrades', 'assignfeedback_offline'),
+                    'downloadgrades' => get_string('downloadgrades', 'assignfeedback_offline'));
     }
 
     /**

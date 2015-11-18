@@ -45,11 +45,11 @@ class assignfeedback_offline_upload_grades_form extends moodleform {
 
         $mform->addElement('header', 'uploadgrades', get_string('uploadgrades', 'assignfeedback_offline'));
 
-        $fileoptions = array('subdirs'=>0,
-                                'maxbytes'=>$COURSE->maxbytes,
-                                'accepted_types'=>'csv',
-                                'maxfiles'=>1,
-                                'return_types'=>FILE_INTERNAL);
+        $fileoptions = array('subdirs' => 0,
+                             'maxbytes' => $COURSE->maxbytes,
+                             'accepted_types' => 'csv',
+                             'maxfiles' => 1,
+                             'return_types' => FILE_INTERNAL);
 
         $mform->addElement('filepicker', 'gradesfile', get_string('uploadafile'), null, $fileoptions);
         $mform->addRule('gradesfile', get_string('uploadnofilefound'), 'required', null, 'client');
@@ -57,17 +57,17 @@ class assignfeedback_offline_upload_grades_form extends moodleform {
 
         $mform->addElement('checkbox', 'ignoremodified', '', get_string('ignoremodified', 'assignfeedback_offline'));
         $mform->addHelpButton('ignoremodified', 'ignoremodified', 'assignfeedback_offline');
-		
-		$choices = csv_import_reader::get_delimiter_list();
+
+        $choices = csv_import_reader::get_delimiter_list();
         $mform->addElement('select', 'delimiter_name', get_string('csvdelimiter', 'tool_uploaduser'), $choices);
         if (array_key_exists('cfg', $choices)) {
-        	$mform->setDefault('delimiter_name', 'cfg');
+            $mform->setDefault('delimiter_name', 'cfg');
         } else if (get_string('listsep', 'langconfig') == ';') {
-        	$mform->setDefault('delimiter_name', 'semicolon');
+            $mform->setDefault('delimiter_name', 'semicolon');
         } else {
-        	$mform->setDefault('delimiter_name', 'comma');
+            $mform->setDefault('delimiter_name', 'comma');
         }
-        
+
         $choices = core_text::get_encodings();
         $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploaduser'), $choices);
         $mform->setDefault('encoding', 'UTF-8');

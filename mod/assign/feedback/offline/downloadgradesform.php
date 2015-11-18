@@ -27,10 +27,10 @@ defined('MOODLE_INTERNAL') || die('Direct access to this script is forbidden.');
 require_once($CFG->libdir.'/formslib.php');
 
 /**
- * Upload modified grading worksheet
+ * Upload modified grading worksheet using export 
  *
  * @package   assignfeedback_offline
- * @copyright 2012 NetSpot {@link http://www.netspot.com.au}
+ * @copyright 2015 ed-rom {@link http://ed-rom.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class assignfeedback_offline_download_grades_form extends moodleform {
@@ -44,7 +44,6 @@ class assignfeedback_offline_download_grades_form extends moodleform {
         $params = $this->_customdata;
 
         $mform->addElement('header', 'downloadgrades', get_string('downloadgrades', 'assignfeedback_offline'));
-
 
         $choices = csv_import_reader::get_delimiter_list();
         $mform->addElement('select', 'delimiter_name', get_string('csvdelimiter', 'tool_uploaduser'), $choices);
@@ -64,7 +63,7 @@ class assignfeedback_offline_download_grades_form extends moodleform {
         $mform->setType('id', PARAM_INT);
         $mform->addElement('hidden', 'action', 'viewpluginpage');
         $mform->setType('action', PARAM_ALPHA);
-        $mform->addElement('hidden', 'pluginaction', 'downloadgradesexecute'); 
+        $mform->addElement('hidden', 'pluginaction', 'downloadgradesexecute');
         $mform->setType('pluginaction', PARAM_ALPHA);
         $mform->addElement('hidden', 'plugin', 'offline');
         $mform->setType('plugin', PARAM_PLUGIN);
